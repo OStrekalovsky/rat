@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<SALES>
+    <SALE>
+        <CARD_NUMBER>78483</CARD_NUMBER>
+        <DATE>1528205653605</DATE>
+        <PRODUCTS>
+            <PRODUCT>
+                <PRODUCT_CODE>15</PRODUCT_CODE>
+                <NAME>Чипсы</NAME>
+                <PRICE>47,20</PRICE>
+                <COUNT>1</COUNT>
+            </PRODUCT>
+            <PRODUCT>
+                <PRODUCT_CODE>3</PRODUCT_CODE>
+                <NAME>Вода</NAME>
+                <PRICE>25,99</PRICE>
+                <COUNT>2</COUNT>
+            </PRODUCT>
+        </PRODUCTS>
+    </SALE>
+    <SALE>
+        <CARD_NUMBER>77394</CARD_NUMBER>
+        <DATE>1528205653605</DATE>
+        <PRODUCTS>
+            <PRODUCT>
+                <PRODUCT_CODE>16</PRODUCT_CODE>
+                <NAME>Увлажнитель картошки</NAME>
+                <PRICE>1500,00</PRICE>
+                <COUNT>99</COUNT>
+            </PRODUCT>
+        </PRODUCTS>
+    </SALE>
+</SALES>
