@@ -4,12 +4,12 @@ create table if not exists States(
     origin  varchar(255) NOT NULL,
     card_number varchar(255) not null,
     sale_date timestamp not null
-)ENGINE=InnoDB;
+)ENGINE=InnoDB CHARACTER SET=utf8;
 create table if not exists Receipts (
     sale_id int AUTO_INCREMENT PRIMARY KEY,
     card_number  varchar(255) not null ,
     sale_date timestamp not null
-)ENGINE=InnoDB;
+)ENGINE=InnoDB CHARACTER SET=utf8;
 create table if not exists Products(
     sale_id int not null,
     code integer not null,
@@ -19,4 +19,4 @@ create table if not exists Products(
     FOREIGN KEY (sale_id)
         REFERENCES Receipts (sale_id)
         ON UPDATE RESTRICT ON DELETE CASCADE
-)ENGINE=InnoDB;
+)ENGINE=InnoDB CHARACTER SET=utf8;
