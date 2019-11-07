@@ -58,15 +58,18 @@ public class MySQLStorage implements ReceiptStorage {
 
     @Override
     public void store(File fileName, List<Receipt> receipts) throws ReceiptsStoreException {
-        log.info("Saving receipts into DB...");
-        Optional<DBState> dbState = DBState.valueOf(jdbc, fileName.getName());
-        if (dbState.isPresent()) {
-            continueReceiptsSavingFromOriginCheckpoint(fileName.getName(), receipts, dbState.get());
-        } else {
-            saveReceiptsFromUnknownOrigin(fileName.getName(), receipts);
+        try {
+            log.info("Saving receipts into DB from file:{}", fileName.getAbsolutePath());
+            Optional<DBState> dbState = DBState.valueOf(jdbc, fileName.getName());
+            if (dbState.isPresent()) {
+                continueReceiptsSavingFromOriginCheckpoint(fileName.getName(), receipts, dbState.get());
+            } else {
+                saveReceiptsFromUnknownOrigin(fileName.getName(), receipts);
+            }
+        } catch (Exception e) {
+            throw new ReceiptsStoreException("Failed to save receipts from file:" + fileName.getAbsolutePath(), e);
         }
-        log.info("Receipts has been saved");
-        throw new ReceiptsStoreException("oops");
+        log.info("Receipts have been saved");
     }
 
     private void continueReceiptsSavingFromOriginCheckpoint(String originId, List<Receipt> receipts, DBState state) {
