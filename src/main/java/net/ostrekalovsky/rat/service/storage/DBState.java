@@ -1,44 +1,48 @@
 package net.ostrekalovsky.rat.service.storage;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Data
 public class DBState {
 
     private final String origin;
-    private final String lastSavedCardNumber;
-    private final long lastSavedSaleDate;
+    private volatile int offset;
 
-    public static Optional<DBState> valueOf(JdbcTemplate jdbc, String origin) {
-        List<DBState> originCheckpoint = jdbc.query("select card_number, sale_date from States where origin=?", new Object[]{origin},
-                getDbStateRowMapper(origin));
+    public DBState(String origin, int offset) {
+        this.origin = origin;
+        this.offset = offset;
+    }
+
+    public void moveForward() {
+        offset++;
+    }
+
+    public static DBState valueOf(JdbcTemplate jdbc, String origin) {
+        List<DBState> originCheckpoint = jdbc.query("select offset, origin from States where origin=?", new Object[]{origin},
+                (ResultSet rs, int rowNum) -> new DBState(rs.getString("origin"), rs.getInt("offset")));
         if (originCheckpoint.isEmpty()) {
-            return Optional.empty();
-        } else if (origin.length() == 1) {
-            return Optional.of(originCheckpoint.get(0));
+            log.debug("New origin:{}. Start from the beginning", origin);
+            DBState state = new DBState(origin, -1);
+            jdbc.update(con -> {
+                PreparedStatement ps = con.prepareStatement("insert into States(offset, origin) values (?,?)");
+                ps.setInt(1, state.getOffset());
+                ps.setString(2, state.getOrigin());
+                return ps;
+            });
+            return state;
+        } else if (originCheckpoint.size()== 1) {
+            DBState state = originCheckpoint.get(0);
+            log.debug("Resume import from state={}", state);
+            return state;
         } else {
             throw new RuntimeException("Corrupted DB State: non unique state for origin:" + origin);
         }
-    }
-
-    private static RowMapper<DBState> getDbStateRowMapper(String origin) {
-        return new RowMapper<DBState>() {
-            @Override
-            public DBState mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new DBState(
-                        origin,
-                        rs.getString("card_number"),
-                        rs.getTimestamp("sale_date ").getTime()
-                );
-            }
-        };
     }
 }

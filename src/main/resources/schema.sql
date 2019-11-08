@@ -2,8 +2,8 @@ create database receipts;
 use receipts;
 create table if not exists States(
     origin  varchar(255) NOT NULL,
-    card_number varchar(255) not null,
-    sale_date timestamp not null
+    offset int not null,
+    PRIMARY KEY (origin, offset)
 )ENGINE=InnoDB CHARACTER SET=utf8;
 create table if not exists Receipts (
     sale_id int AUTO_INCREMENT PRIMARY KEY,
