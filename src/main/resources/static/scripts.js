@@ -10,6 +10,10 @@ function addSumByDateHandler(){
         console.log("sending SumByDate request");
         var date = document.getElementById('sumByDateInput').value;
         var xhr = new XMLHttpRequest();
+        xhr.timeout = 5000;
+        xhr.ontimeout = function(){
+            handleTimeoutStatusResult(statusLabel)
+        }
         xhr.open('GET', '/api/sumByDate?='+date, true);
         xhr.send();
         xhr.onreadystatechange = function() {
@@ -17,7 +21,7 @@ function addSumByDateHandler(){
           if (xhr.status != 200) {
             handleErrorStatusResult(statusLabel, xhr);
           } else {
-            handleProcessingStatusResult(statusLabel)
+            handleSuccessStatusResult(statusLabel)
           }
         }
         handleProcessingStatusResult(statusLabel)
@@ -31,14 +35,18 @@ function addFavoriteProducts(){
         console.log("sending favoriteProductsSubmit request");
         var date = document.getElementById('card').value;
         var xhr = new XMLHttpRequest();
+        xhr.timeout = 5000;
         xhr.open('GET', '/api/favoriteProducts?='+date, true);
+        xhr.ontimeout = function(){
+            handleTimeoutStatusResult(statusLabel)
+        }
         xhr.send();
         xhr.onreadystatechange = function() {
           if (xhr.readyState != 4) return;
           if (xhr.status != 200) {
             handleErrorStatusResult(statusLabel, xhr);
           } else {
-            handleProcessingStatusResult(statusLabel)
+            handleSuccessStatusResult(statusLabel)
           }
         }
         handleProcessingStatusResult(statusLabel)
@@ -46,7 +54,7 @@ function addFavoriteProducts(){
 }
 
 function handleSuccessStatusResult(elem){
-    statusLabel.innerHTML = 'Выполнен';
+    elem.innerHTML = 'Выполнен';
     elem.className="success";
 }
 
@@ -57,5 +65,10 @@ function handleProcessingStatusResult(elem){
 
 function handleErrorStatusResult(elem, xhr){
     elem.innerHTML="Ошибка."+xhr.status + ': ' + xhr.statusText;
+    elem.className="error";
+}
+
+function handleTimeoutStatusResult(elem){
+    elem.innerHTML="Ошибка. Операция превысила максимальное время ожидания результата."
     elem.className="error";
 }
