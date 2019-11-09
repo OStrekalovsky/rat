@@ -1,6 +1,6 @@
 window.onload = function() {
     addSumByDateHandler();
-    addFavoriteProducts();
+    addFavouriteProducts();
 }
 
 function addSumByDateHandler(){
@@ -14,7 +14,8 @@ function addSumByDateHandler(){
         xhr.ontimeout = function(){
             handleTimeoutStatusResult(statusLabel)
         }
-        xhr.open('GET', '/api/sumByDate?='+date, true);
+        xhr.open('GET', '/api/v1/sumByDate?date='+ date, true);
+        xhr.setRequestHeader("Accept", "application/json");
         xhr.send();
         xhr.onreadystatechange = function() {
           if (xhr.readyState != 4) return;
@@ -22,21 +23,26 @@ function addSumByDateHandler(){
             handleErrorStatusResult(statusLabel, xhr);
           } else {
             handleSuccessStatusResult(statusLabel)
+            fillSumByDateTable(JSON.parse(xhr.responseText));
           }
         }
         handleProcessingStatusResult(statusLabel)
     }
 }
 
-function addFavoriteProducts(){
-    var statusLabel = document.getElementById('favoriteProductsStatus');
-    var favoriteProductsSubmit = document.getElementById('favoriteProductsSubmit');
-    favoriteProductsSubmit.onclick = function() {
-        console.log("sending favoriteProductsSubmit request");
+function addFavouriteProducts(){
+    var statusLabel = document.getElementById('favouriteProductsStatus');
+    var favouriteProductsSubmit = document.getElementById('favouriteProductsSubmit');
+
+    favouriteProductsSubmit.onclick = function() {
+        console.log("sending favouriteProductsSubmit request");
         var date = document.getElementById('card').value;
+        var requestLimit = 3;
         var xhr = new XMLHttpRequest();
+        xhr.responseType = "json"
         xhr.timeout = 5000;
-        xhr.open('GET', '/api/favoriteProducts?='+date, true);
+        xhr.open('GET', '/api/v1/favouriteProducts?limit=' + requestLimit, true);
+        xhr.setRequestHeader("Accept", "application/json");
         xhr.ontimeout = function(){
             handleTimeoutStatusResult(statusLabel)
         }
@@ -47,9 +53,42 @@ function addFavoriteProducts(){
             handleErrorStatusResult(statusLabel, xhr);
           } else {
             handleSuccessStatusResult(statusLabel)
+            fillfavouriteProductsTable(JSON.parse(xhr.responseText));
           }
         }
         handleProcessingStatusResult(statusLabel)
+    }
+}
+
+function clearTableDataExceptHeader(table){
+    var size = table.rows.length;
+    for (var i = 1; i< size; i++){
+        table.deleteRow(1)
+    }
+}
+
+// Response format {"date":"2010-12-01","sum":1241312313.53}
+function fillSumByDateTable(response){
+    var table = document.getElementById("sumByDateTable");
+    clearTableDataExceptHeader(table);
+    resultRow = table.insertRow(1);
+    resultRow.insertCell().innerHTML = response.date;
+    resultRow.insertCell().innerHTML = response.sum;
+}
+// Response format {favourites:{"name":"Cookies","count":100,"code":123}]}
+function fillFavouriteProductsTable(response){
+    var table = document.getElementById("favouriteProductsTable");
+    clearTableDataExceptHeader(table);
+    for (var i = 0; i < response.favourites.length; i++){
+        resultRow = table.insertRow(i+1);
+        var nameCell = resultRow.insertCell();
+        nameCell.innerHTML = response.favourites[i].name;
+        var countCell = resultRow.insertCell();
+        countCell.innerHTML = response.favourites[i].count;
+        countCell.className="number"
+        var codeCell = resultRow.insertCell();
+        codeCell.innerHTML = response.favourites[i].code;
+        codeCell.className="number"
     }
 }
 
