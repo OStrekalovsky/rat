@@ -1,8 +1,7 @@
 package net.ostrekalovsky.rat.service.storage;
 
 import lombok.extern.slf4j.Slf4j;
-import net.ostrekalovsky.rat.service.Product;
-import net.ostrekalovsky.rat.service.Receipt;
+import net.ostrekalovsky.rat.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,15 +10,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Service
-public class MySQLDAOService {
+public class MySQLDAOService implements ReportService {
 
     @Autowired
     private DataSource dataSource;
@@ -65,5 +69,42 @@ public class MySQLDAOService {
         });
         log.debug("All products saved");
         log.info("Receipt saved. State={}", state);
+    }
+
+    @Override
+    public Optional<FavouriteReport> getFavouriteProductsByCard(String card, int limit) {
+        log.info("Request: getFavouriteProductsByCard, card={}, limit={}", card, limit);
+        //TODO: explain needed
+        String sql = "select distinct Products.name as name, Products.code as code, T.count as count from (select sum(Products.count) as count, code from Products INNER JOIN Receipts ON Products.sale_id=Receipts.sale_id WHERE Receipts.card_number=? GROUP BY Products.code ORDER BY count desc limit ?) as T INNER JOIN Products ON Products.code=T.code ORDER BY count desc";
+        List<ProductProjection> results = jdbc.query(sql,
+                new Object[]{card, limit},
+                (rs, rowNum) -> new ProductProjection(rs.getString("name"),
+                        rs.getInt("count"),
+                        rs.getInt("code")));
+
+        if (results.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new FavouriteReport(results));
+        }
+    }
+
+    @Override
+    public DailyReport getDailyReport(LocalDate date) {
+        log.info("Request: getDailyReport, date={}", date);
+        LocalDate nextDay = date.plusDays(1);
+        String sql = "select sum(Products.price * Products.count) AS totalSum from Products INNER JOIN Receipts ON Products.sale_id=Receipts.sale_id WHERE Receipts.sale_date>=? and Receipts.sale_date<?";
+        List<BigDecimal> results = jdbc.query(sql,
+                new Object[]{date.format(DateTimeFormatter.ISO_DATE), nextDay.format(DateTimeFormatter.ISO_DATE)},
+                (rs, rowNum) -> rs.getBigDecimal("totalSum"));
+        if (results.size() != 1) {
+            throw new RuntimeException("Aggregated request returns more then one row:" + results);
+        }
+        BigDecimal result = results.get(0);
+        if (Objects.isNull(result)) {
+            return new DailyReport(date, new BigDecimal(0));
+        } else {
+            return new DailyReport(date, result);
+        }
     }
 }

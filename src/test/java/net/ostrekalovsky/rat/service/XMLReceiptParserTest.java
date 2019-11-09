@@ -2,7 +2,7 @@ package net.ostrekalovsky.rat.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import net.ostrekalovsky.rat.ImportProps;
+import net.ostrekalovsky.rat.RATProps;
 import net.ostrekalovsky.rat.service.importer.XMLReceiptParser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,8 +30,8 @@ public class XMLReceiptParserTest {
         }
 
         @Bean
-        ImportProps getImportProps() {
-            ImportProps importProps = new ImportProps();
+        RATProps getImportProps() {
+            RATProps importProps = new RATProps();
 //            importProps.setDir("/home/ostrekalovsky/Downloads/maxi/import/");
             importProps.setImportDir("src/test/resources/importdir");
             return importProps;

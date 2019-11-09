@@ -1,7 +1,7 @@
 package net.ostrekalovsky.rat.service.importer;
 
 import lombok.extern.slf4j.Slf4j;
-import net.ostrekalovsky.rat.ImportProps;
+import net.ostrekalovsky.rat.RATProps;
 import net.ostrekalovsky.rat.service.Product;
 import net.ostrekalovsky.rat.service.Receipt;
 import net.ostrekalovsky.rat.service.ReceiptParser;
@@ -29,7 +29,7 @@ import java.util.*;
 public class XMLReceiptParser implements ReceiptParser {
 
     @Autowired
-    private ImportProps importProps;
+    private RATProps RATProps;
 
     @Autowired
     private ReceiptStorage storage;
@@ -88,12 +88,14 @@ public class XMLReceiptParser implements ReceiptParser {
 
     @Override
     public void parseAndStore() throws ReceiptsImportException {
-        File importDir = new File(importProps.getImportDir());
+        File importDir = new File(RATProps.getImportDir());
         log.info("Read files from directory:{}", importDir.getAbsolutePath());
+        //TODO: skip files which were already fully uploaded
         File[] files = importDir.listFiles(File::isFile);
         if (Objects.isNull(files)) {
             throw new ReceiptsImportException("Is not a directory:" + importDir);
         }
+        //TODO: alternate file reading and upload to reduce memory footprint instead of reading all at once.
         for (File file : files) {
             try {
                 Document doc = loadDoc(file);

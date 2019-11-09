@@ -6,11 +6,13 @@ window.onload = function() {
 function addSumByDateHandler() {
     var statusLabel = document.getElementById('sumByDateStatus');
     var sumByDateSubmit = document.getElementById('sumByDateSubmit');
+    var table = document.getElementById("sumByDateTable");
     sumByDateSubmit.onclick = function() {
         console.log("sending SumByDate request");
+        clearTableDataExceptHeader(table);
         var date = document.getElementById('sumByDateInput').value;
         var xhr = new XMLHttpRequest();
-        xhr.timeout = 5000;
+        xhr.timeout = 60000;
         xhr.ontimeout = function() {
             handleTimeoutStatusResult(statusLabel)
         }
@@ -20,10 +22,10 @@ function addSumByDateHandler() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4) return;
             if (xhr.status != 200) {
-                handleErrorStatusResult(statusLabel, xhr);
+                handleErrorStatusResult(statusLabel, "Код " + xhr.status);
             } else {
                 handleSuccessStatusResult(statusLabel)
-                fillSumByDateTable(JSON.parse(xhr.responseText));
+                fillSumByDateTable(JSON.parse(xhr.responseText), table);
             }
         }
         handleProcessingStatusResult(statusLabel)
@@ -33,14 +35,14 @@ function addSumByDateHandler() {
 function addFavouriteProducts() {
     var statusLabel = document.getElementById('favouriteProductsStatus');
     var favouriteProductsSubmit = document.getElementById('favouriteProductsSubmit');
+    var table = document.getElementById("favouriteProductsTable");
     favouriteProductsSubmit.onclick = function() {
         console.log("sending favouriteProductsSubmit request");
-        var date = document.getElementById('card').value;
-        var requestLimit = 3;
+        clearTableDataExceptHeader(table);
+        var card = document.getElementById('card').value;
         var xhr = new XMLHttpRequest();
-        xhr.responseType = "json"
-        xhr.timeout = 5000;
-        xhr.open('GET', '/api/v1/favouriteProducts?limit=' + requestLimit, true);
+        xhr.timeout = 60000;
+        xhr.open('GET', '/api/v1/favouriteProducts?card=' + card, true);
         xhr.setRequestHeader("Accept", "application/json");
         xhr.ontimeout = function() {
             handleTimeoutStatusResult(statusLabel)
@@ -48,11 +50,13 @@ function addFavouriteProducts() {
         xhr.send();
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4) return;
-            if (xhr.status != 200) {
-                handleErrorStatusResult(statusLabel, xhr);
-            } else {
+            if (xhr.status != 200 && xhr.status != 404) {
+                handleErrorStatusResult(statusLabel, "Код "+ xhr.status);
+            } else if (xhr.status == 404) {
+                handleErrorStatusResult(statusLabel, "Данных по карте нет");
+            }else {
                 handleSuccessStatusResult(statusLabel)
-                fillfavouriteProductsTable(JSON.parse(xhr.responseText));
+                fillFavouriteProductsTable(JSON.parse(xhr.responseText), table);
             }
         }
         handleProcessingStatusResult(statusLabel)
@@ -66,27 +70,41 @@ function clearTableDataExceptHeader(table) {
     }
 }
 
+function formatISODate(dateString){
+    /*
+       I had to force the locale so that all browsers had the same result
+       because they read locale settings differently, which leads to inconsistency in UI.
+    */
+    return new Intl.DateTimeFormat('ru-Ru').format(new Date(dateString));
+}
+
+function formatNumber(moneyString){
+    /*
+       I had to force the locale so that all browsers had the same result
+       because they read locale settings differently, which leads to inconsistency in UI.
+    */
+    return new Intl.NumberFormat('ru-Ru').format(moneyString);
+}
+
 // Response format {"date":"2010-12-01","sum":1241312313.53}
-function fillSumByDateTable(response) {
-    var table = document.getElementById("sumByDateTable");
-    clearTableDataExceptHeader(table);
+function fillSumByDateTable(response, table) {
     resultRow = table.insertRow(1);
-    resultRow.insertCell().innerHTML = response.date;
-    resultRow.insertCell().innerHTML = response.sum;
+    resultRow.insertCell().innerHTML = formatISODate(response.date);
+    resultRow.insertCell().innerHTML = response.sum.toLocaleString();
 }
 // Response format {favourites:{"name":"Cookies","count":100,"code":123}]}
-function fillFavouriteProductsTable(response) {
-    var table = document.getElementById("favouriteProductsTable");
+function fillFavouriteProductsTable(response, table) {
+
     clearTableDataExceptHeader(table);
     for (var i = 0; i < response.favourites.length; i++) {
         resultRow = table.insertRow(i + 1);
         var nameCell = resultRow.insertCell();
         nameCell.innerHTML = response.favourites[i].name;
         var countCell = resultRow.insertCell();
-        countCell.innerHTML = response.favourites[i].count;
+        countCell.innerHTML = formatNumber(response.favourites[i].count)
         countCell.className = "number"
         var codeCell = resultRow.insertCell();
-        codeCell.innerHTML = response.favourites[i].code;
+        codeCell.innerHTML = response.favourites[i].code
         codeCell.className = "number"
     }
 }
@@ -101,8 +119,8 @@ function handleProcessingStatusResult(elem) {
     elem.className = "processing";
 }
 
-function handleErrorStatusResult(elem, xhr) {
-    elem.innerHTML = "Ошибка." + xhr.status + ': ' + xhr.statusText;
+function handleErrorStatusResult(elem, details) {
+    elem.innerHTML = "Ошибка. " + details;
     elem.className = "error";
 }
 

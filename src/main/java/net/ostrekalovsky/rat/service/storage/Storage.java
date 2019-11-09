@@ -36,7 +36,7 @@ public class Storage implements ReceiptStorage {
         log.info("Receipts have been saved");
     }
 
-    public void saveReceipts(DBState state, List<Receipt> receipts) {
+    private void saveReceipts(DBState state, List<Receipt> receipts) {
         state.moveForward();
         for (; state.getOffset() < receipts.size(); state.moveForward()) {
             dao.storeReceipt(state, receipts.get(state.getOffset()));
