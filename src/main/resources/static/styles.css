@@ -101,10 +101,6 @@ a:active {
   overflow: hidden;
 }
 
-#right{
-   float: right;
-}
-
 .header, p, ul, ol, blockquote, pre, dl, table {
   margin-top: 20px;
 }
@@ -143,33 +139,36 @@ ul li {
     border-bottom: 0;
 }
 
-.footer .author{
-    color:#DD7700;
+.footer .author {
+    color: #DD7700;
 }
 
 tr:nth-child(even) {
-    background-color:#33373b;
+    background-color: #33373b;
 }
-label{
+
+label {
     font-weight: 600;
 }
+
 th, td {
     padding: 15px;
-    text-align:left;
+    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-th.number, td.number{
-    text-align:right;
+th.number, td.number {
+    text-align: right;
 }
 
-.success{
-    color:#3f9c35
-}
-.processing{
-    color:#c26e22
-}
-.error{
-    color:#cc0000;
+.success {
+    color: #3f9c35
 }
 
+.processing {
+    color: #c26e22
+}
+
+.error {
+    color: #cc0000;
+}

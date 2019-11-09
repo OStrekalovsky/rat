@@ -3,7 +3,7 @@ window.onload = function() {
     addFavouriteProducts();
 }
 
-function addSumByDateHandler(){
+function addSumByDateHandler() {
     var statusLabel = document.getElementById('sumByDateStatus');
     var sumByDateSubmit = document.getElementById('sumByDateSubmit');
     sumByDateSubmit.onclick = function() {
@@ -11,29 +11,28 @@ function addSumByDateHandler(){
         var date = document.getElementById('sumByDateInput').value;
         var xhr = new XMLHttpRequest();
         xhr.timeout = 5000;
-        xhr.ontimeout = function(){
+        xhr.ontimeout = function() {
             handleTimeoutStatusResult(statusLabel)
         }
-        xhr.open('GET', '/api/v1/sumByDate?date='+ date, true);
+        xhr.open('GET', '/api/v1/sumByDate?date=' + date, true);
         xhr.setRequestHeader("Accept", "application/json");
         xhr.send();
         xhr.onreadystatechange = function() {
-          if (xhr.readyState != 4) return;
-          if (xhr.status != 200) {
-            handleErrorStatusResult(statusLabel, xhr);
-          } else {
-            handleSuccessStatusResult(statusLabel)
-            fillSumByDateTable(JSON.parse(xhr.responseText));
-          }
+            if (xhr.readyState != 4) return;
+            if (xhr.status != 200) {
+                handleErrorStatusResult(statusLabel, xhr);
+            } else {
+                handleSuccessStatusResult(statusLabel)
+                fillSumByDateTable(JSON.parse(xhr.responseText));
+            }
         }
         handleProcessingStatusResult(statusLabel)
     }
 }
 
-function addFavouriteProducts(){
+function addFavouriteProducts() {
     var statusLabel = document.getElementById('favouriteProductsStatus');
     var favouriteProductsSubmit = document.getElementById('favouriteProductsSubmit');
-
     favouriteProductsSubmit.onclick = function() {
         console.log("sending favouriteProductsSubmit request");
         var date = document.getElementById('card').value;
@@ -43,32 +42,32 @@ function addFavouriteProducts(){
         xhr.timeout = 5000;
         xhr.open('GET', '/api/v1/favouriteProducts?limit=' + requestLimit, true);
         xhr.setRequestHeader("Accept", "application/json");
-        xhr.ontimeout = function(){
+        xhr.ontimeout = function() {
             handleTimeoutStatusResult(statusLabel)
         }
         xhr.send();
         xhr.onreadystatechange = function() {
-          if (xhr.readyState != 4) return;
-          if (xhr.status != 200) {
-            handleErrorStatusResult(statusLabel, xhr);
-          } else {
-            handleSuccessStatusResult(statusLabel)
-            fillfavouriteProductsTable(JSON.parse(xhr.responseText));
-          }
+            if (xhr.readyState != 4) return;
+            if (xhr.status != 200) {
+                handleErrorStatusResult(statusLabel, xhr);
+            } else {
+                handleSuccessStatusResult(statusLabel)
+                fillfavouriteProductsTable(JSON.parse(xhr.responseText));
+            }
         }
         handleProcessingStatusResult(statusLabel)
     }
 }
 
-function clearTableDataExceptHeader(table){
+function clearTableDataExceptHeader(table) {
     var size = table.rows.length;
-    for (var i = 1; i< size; i++){
+    for (var i = 1; i < size; i++) {
         table.deleteRow(1)
     }
 }
 
 // Response format {"date":"2010-12-01","sum":1241312313.53}
-function fillSumByDateTable(response){
+function fillSumByDateTable(response) {
     var table = document.getElementById("sumByDateTable");
     clearTableDataExceptHeader(table);
     resultRow = table.insertRow(1);
@@ -76,38 +75,38 @@ function fillSumByDateTable(response){
     resultRow.insertCell().innerHTML = response.sum;
 }
 // Response format {favourites:{"name":"Cookies","count":100,"code":123}]}
-function fillFavouriteProductsTable(response){
+function fillFavouriteProductsTable(response) {
     var table = document.getElementById("favouriteProductsTable");
     clearTableDataExceptHeader(table);
-    for (var i = 0; i < response.favourites.length; i++){
-        resultRow = table.insertRow(i+1);
+    for (var i = 0; i < response.favourites.length; i++) {
+        resultRow = table.insertRow(i + 1);
         var nameCell = resultRow.insertCell();
         nameCell.innerHTML = response.favourites[i].name;
         var countCell = resultRow.insertCell();
         countCell.innerHTML = response.favourites[i].count;
-        countCell.className="number"
+        countCell.className = "number"
         var codeCell = resultRow.insertCell();
         codeCell.innerHTML = response.favourites[i].code;
-        codeCell.className="number"
+        codeCell.className = "number"
     }
 }
 
-function handleSuccessStatusResult(elem){
+function handleSuccessStatusResult(elem) {
     elem.innerHTML = 'Выполнен';
-    elem.className="success";
+    elem.className = "success";
 }
 
-function handleProcessingStatusResult(elem){
+function handleProcessingStatusResult(elem) {
     elem.innerHTML = 'Обработка запроса...';
-    elem.className="processing";
+    elem.className = "processing";
 }
 
-function handleErrorStatusResult(elem, xhr){
-    elem.innerHTML="Ошибка."+xhr.status + ': ' + xhr.statusText;
-    elem.className="error";
+function handleErrorStatusResult(elem, xhr) {
+    elem.innerHTML = "Ошибка." + xhr.status + ': ' + xhr.statusText;
+    elem.className = "error";
 }
 
-function handleTimeoutStatusResult(elem){
-    elem.innerHTML="Ошибка. Операция превысила максимальное время ожидания результата."
-    elem.className="error";
+function handleTimeoutStatusResult(elem) {
+    elem.innerHTML = "Ошибка. Операция превысила максимальное время ожидания результата."
+    elem.className = "error";
 }
