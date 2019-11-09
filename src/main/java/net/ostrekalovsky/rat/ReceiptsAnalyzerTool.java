@@ -12,13 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableScheduling
 public class ReceiptsAnalyzerTool implements WebMvcConfigurer {
 
-
     public static void main(String[] args) {
         SpringApplication.run(ReceiptsAnalyzerTool.class, args);
     }
 
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("home");
-    }
 }

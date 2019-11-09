@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js"></script>
+    <title>Receipts Analyzer Tool</title>
+</head>
+<body>
+<div class="wrapper">
+    <div class="site">
+        <div class="title"><h1>Receipts Analyzer Tool</h1></div>
+        <div class="splitter">
+            <h2>Сумма чеков за один день</h2>
+        </div>
+        <div>
+            <label for="sumByDateInput">Дата:</label>
+            <input type="date" id="sumByDateInput" required  data-date="" pattern="dd.MM.yy" value="2018-06-05" min="1970-01-01">
+            <button id="sumByDateSubmit">Подсчитать</button>
+            <label id="sumByDateStatus"></label>
+            <table>
+                <thead>
+                    <th>Дата</th>
+                    <th class="number">Сумма чеков</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>???</td>
+                        <td class="number">???</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="splitter">
+            <h2>Самые популярные товары</h2>
+        </div>
+        <div>
+            <label for="card">Номер карты покупателя:</label>
+            <input id="card" value="78483">
+            <button id="favoriteProductsSubmit">Подсчитать</button>
+            <label id="favoriteProductsStatus"></label>
+            <table>
+                <thead>
+                <th>Название</th>
+                <th class="number">Количество покупок</th>
+                <th class="number">Артикул</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>???</td>
+                    <td class="number">???</td>
+                    <td class="number">???</td>
+                </tr>
+                <tr>
+                    <td>???</td>
+                    <td class="number">???</td>
+                    <td class="number">???</td>
+                </tr>
+                <tr>
+                    <td>???</td>
+                    <td class="number">???</td>
+                    <td class="number">???</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<div class="footer">
+    <span>Designed by <span class="author">Oleg Strekalovsky (<a href="mailto:o.strekalovsky@yandex.ru">o.strekalovsky@yandex.ru</a>)</span></span>
+</div>
+</body>
+</html>
