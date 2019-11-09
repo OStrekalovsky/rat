@@ -62,7 +62,7 @@ public class XMLReceiptParser implements ReceiptParser {
                 long timestamp = Long.parseLong(sale.getElementsByTagName("DATE").item(0).getTextContent());
                 log.debug("Card number={}, date={}", cardNumber, new java.util.Date(timestamp));
                 NodeList saleProducts = sale.getElementsByTagName("PRODUCT");
-                Set<Product> products = new HashSet<>();
+                List<Product> products = new ArrayList<>(10);
                 for (int i = 0; i < saleProducts.getLength(); i++) {
                     Node productNode = saleProducts.item(i);
                     if (productNode.getNodeType() == Node.ELEMENT_NODE) {

@@ -13,7 +13,7 @@ import java.util.List;
 public class DBState {
 
     private final String origin;
-    private volatile int offset;
+    private int offset;
 
     public DBState(String origin, int offset) {
         this.origin = origin;
@@ -37,7 +37,7 @@ public class DBState {
                 return ps;
             });
             return state;
-        } else if (originCheckpoint.size()== 1) {
+        } else if (originCheckpoint.size() == 1) {
             DBState state = originCheckpoint.get(0);
             log.debug("Resume import from state={}", state);
             return state;

@@ -44,12 +44,12 @@ public class XMLReceiptParserTest {
                 log.info("Store {} receipts from file:{}", receipts.size(), fileName.getAbsolutePath());
                 assertThat(receipts).containsExactlyInAnyOrder(
                         new Receipt("78483", 1528205653605L,
-                                new HashSet<>(Arrays.asList(
+                                Arrays.asList(
                                         new Product(15, "Чипсы", new BigDecimal("47.20"), 1),
-                                        new Product(3, "Вода", new BigDecimal("25.99"), 2)))),
+                                        new Product(3, "Вода", new BigDecimal("25.99"), 2))),
                         new Receipt("77394", 1528205653605L,
-                                new HashSet<>(Collections.singletonList(
-                                        new Product(16, "Увлажнитель картошки", new BigDecimal("1500.00"), 99)))));
+                                Collections.singletonList(
+                                        new Product(16, "Увлажнитель картошки", new BigDecimal("1500.00"), 99))));
             };
         }
 
