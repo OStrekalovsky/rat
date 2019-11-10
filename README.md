@@ -36,9 +36,9 @@ File: `src/main/java/resources/application.properties`.
 
 ## Run with Docker Compose (Application & MySQL)
 
-1. Create directory 'mysql' for MySQL data.
+1. Create directory `mysql` for MySQL data.
 2. Create directory `data/import` for files to import.
-2. Create directory 'config' for `application.properties` file and set the following params:
+2. Create directory `config` with `application.properties` file and set the following params:
 ````
 spring.datasource.url=jdbc:mysql://mysql:3306/rat?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
 spring.datasource.username=root
