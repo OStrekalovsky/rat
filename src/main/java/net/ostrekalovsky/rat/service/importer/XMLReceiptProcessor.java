@@ -21,9 +21,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Implementation of receipts parser from XML files.
+ * <br/>
+ * The implementation (SAX Parser) was chosen based on the following considerations: <br/>
+ * - We should upload data from file only after making sure that its structure is correct.
+ * So In any case, we must first read this file.
+ * <br/>
+ * - Performance testing showed that XML parsing is not a real bottleneck in this case.
+ * Implementation doesn't parse all new files at once before the first one will be saved by a storage.
+ * It alternates between parsing and loading without using too much memory and does not delay loading too much,
+ * because parsing is not a bottleneck.
+ * Under certain circumstances, the parser can be replaced by a streaming one to reduce memory overhead and
+ * to maximize storage bandwidth utilization, but I don’t think there is a need for this now.
+ */
 @Slf4j
 @Service
-public class XMLReceiptParser implements ReceiptParser {
+public class XMLReceiptProcessor implements ReceiptProcessor {
 
     @Autowired
     private RATProps RATProps;

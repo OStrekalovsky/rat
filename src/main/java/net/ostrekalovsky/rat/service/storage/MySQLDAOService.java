@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-public class MySQLDAOService implements ReportService, PersistentStorage {
+public class MySQLDAOService implements ReportService, PersistentReceiptStorage {
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -47,6 +47,7 @@ public class MySQLDAOService implements ReportService, PersistentStorage {
             return ps;
         }, generatedKeyHolder);
         log.debug("Receipt saved");
+        // Use batch update to speedup uploads of large receipts.
         jdbc.batchUpdate(queryProduct, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {

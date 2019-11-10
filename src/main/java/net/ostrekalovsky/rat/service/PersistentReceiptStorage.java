@@ -2,7 +2,7 @@ package net.ostrekalovsky.rat.service;
 
 import net.ostrekalovsky.rat.service.storage.DBState;
 
-public interface PersistentStorage {
+public interface PersistentReceiptStorage {
 
     void storeReceipt(DBState state, Receipt receipt);
 

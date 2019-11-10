@@ -3,7 +3,7 @@ package net.ostrekalovsky.rat.service;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ostrekalovsky.rat.RATProps;
-import net.ostrekalovsky.rat.service.importer.XMLReceiptParser;
+import net.ostrekalovsky.rat.service.importer.XMLReceiptProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @RunWith(SpringRunner.class)
-public class XMLReceiptParserTest {
+public class XMLReceiptProcessorTest {
 
     @TestConfiguration
     static class TestContextConfiguration {
 
         @Bean
-        public ReceiptParser getReceiptParser() {
-            return new XMLReceiptParser();
+        public ReceiptProcessor getReceiptParser() {
+            return new XMLReceiptProcessor();
         }
 
         @Bean
@@ -66,10 +66,10 @@ public class XMLReceiptParserTest {
 
     @Autowired
     private
-    ReceiptParser receiptParser;
+    ReceiptProcessor receiptProcessor;
 
     @Test
     public void sampleFileShouldBeParsed() throws ReceiptsImportException {
-        receiptParser.parseAndStore();
+        receiptProcessor.parseAndStore();
     }
 }

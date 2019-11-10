@@ -12,7 +12,7 @@ function addSumByDateHandler() {
         clearTableDataExceptHeader(table);
         var date = document.getElementById('sumByDateInput').value;
         var xhr = new XMLHttpRequest();
-        xhr.timeout = 60000;
+        xhr.timeout = 5000;
         xhr.ontimeout = function() {
             handleTimeoutStatusResult(statusLabel)
         }
@@ -41,7 +41,7 @@ function addFavouriteProducts() {
         clearTableDataExceptHeader(table);
         var card = document.getElementById('card').value;
         var xhr = new XMLHttpRequest();
-        xhr.timeout = 60000;
+        xhr.timeout = 5000;
         xhr.open('GET', '/api/v1/favouriteProducts?card=' + card, true);
         xhr.setRequestHeader("Accept", "application/json");
         xhr.ontimeout = function() {

@@ -1,6 +1,6 @@
 package net.ostrekalovsky.rat.service;
 
-public interface ReceiptParser {
+public interface ReceiptProcessor {
 
     void parseAndStore() throws ReceiptsImportException;
 }
