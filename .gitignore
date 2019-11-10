@@ -1,3 +1,5 @@
 *.iml
 target
 data
+config
+mysql
