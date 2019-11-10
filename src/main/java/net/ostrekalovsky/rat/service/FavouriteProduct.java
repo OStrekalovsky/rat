@@ -3,7 +3,7 @@ package net.ostrekalovsky.rat.service;
 import lombok.Data;
 
 @Data
-public class ProductProjection {
+public class FavouriteProduct {
 
     private final String name;
     private final int count;

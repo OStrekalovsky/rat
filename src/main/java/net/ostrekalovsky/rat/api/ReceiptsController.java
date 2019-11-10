@@ -12,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -31,8 +29,8 @@ public class ReceiptsController {
     private RATProps props;
 
     @GetMapping(value = "/favouriteProducts")
-    public ResponseEntity<FavouriteReport> getFavouriteProducts(@RequestParam(value = "limit",required = false) Integer limit, @RequestParam("card") String card) {
-        if (Objects.isNull(limit)){
+    public ResponseEntity<FavouriteReport> getFavouriteProducts(@RequestParam(value = "limit", required = false) Integer limit, @RequestParam("card") String card) {
+        if (Objects.isNull(limit)) {
             limit = props.getReportsFavouriteProductsLimit();
         }
         Optional<FavouriteReport> optReport = reportService.getFavouriteProductsByCard(card, limit);

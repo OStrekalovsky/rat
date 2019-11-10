@@ -11,9 +11,11 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,16 +41,24 @@ public class XMLReceiptParserTest {
 
         @Bean
         ReceiptStorage getReceiptStorage() {
-            return (fileName, receipts) -> {
-                log.info("Store {} receipts from file:{}", receipts.size(), fileName.getAbsolutePath());
-                assertThat(receipts).containsExactlyInAnyOrder(
-                        new Receipt("78483", 1528205653605L,
-                                Arrays.asList(
-                                        new Product(15, "Чипсы", new BigDecimal("47.20"), 1),
-                                        new Product(3, "Вода", new BigDecimal("25.99"), 2))),
-                        new Receipt("77394", 1528205653605L,
-                                Collections.singletonList(
-                                        new Product(16, "Увлажнитель картошки", new BigDecimal("1500.00"), 99))));
+            return new ReceiptStorage() {
+                @Override
+                public void store(File fileName, List<Receipt> receipts) throws ReceiptsStoreException {
+                    log.info("Store {} receipts from file:{}", receipts.size(), fileName.getAbsolutePath());
+                    assertThat(receipts).containsExactlyInAnyOrder(
+                            new Receipt("78483", 1528205653605L,
+                                    Arrays.asList(
+                                            new Product(15, "Чипсы", new BigDecimal("47.20"), 1),
+                                            new Product(3, "Вода", new BigDecimal("25.99"), 2))),
+                            new Receipt("77394", 1528205653605L,
+                                    Collections.singletonList(
+                                            new Product(16, "Увлажнитель картошки", new BigDecimal("1500.00"), 99))));
+                }
+
+                @Override
+                public boolean wasFileProcessed(File file) {
+                    return false;
+                }
             };
         }
 

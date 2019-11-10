@@ -7,5 +7,5 @@ import java.util.List;
 @Data
 public class FavouriteReport {
 
-    private final List<ProductProjection> favourites;
+    private final List<FavouriteProduct> favourites;
 }

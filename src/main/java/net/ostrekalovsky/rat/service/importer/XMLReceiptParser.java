@@ -2,12 +2,7 @@ package net.ostrekalovsky.rat.service.importer;
 
 import lombok.extern.slf4j.Slf4j;
 import net.ostrekalovsky.rat.RATProps;
-import net.ostrekalovsky.rat.service.Product;
-import net.ostrekalovsky.rat.service.Receipt;
-import net.ostrekalovsky.rat.service.ReceiptParser;
-import net.ostrekalovsky.rat.service.ReceiptStorage;
-import net.ostrekalovsky.rat.service.ReceiptsImportException;
-import net.ostrekalovsky.rat.service.ReceiptsStoreException;
+import net.ostrekalovsky.rat.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -22,7 +17,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -90,14 +87,16 @@ public class XMLReceiptParser implements ReceiptParser {
     public void parseAndStore() throws ReceiptsImportException {
         File importDir = new File(RATProps.getImportDir());
         log.info("Read files from directory:{}", importDir.getAbsolutePath());
-        //TODO: skip files which were already fully uploaded
         File[] files = importDir.listFiles(File::isFile);
         if (Objects.isNull(files)) {
             throw new ReceiptsImportException("Is not a directory:" + importDir);
         }
-        //TODO: alternate file reading and upload to reduce memory footprint instead of reading all at once.
         for (File file : files) {
             try {
+                if (storage.wasFileProcessed(file)) {
+                    log.info("File:{} was uploaded and will be skipped", file.getName());
+                    continue;
+                }
                 Document doc = loadDoc(file);
                 storage.store(file, parseSales(doc));
             } catch (ReceiptsImportException e) {

@@ -3,12 +3,14 @@ use rat;
 create table if not exists States(
     origin  varchar(255) NOT NULL,
     offset int not null,
+    processed bool not null default false,
     PRIMARY KEY (origin, offset)
 )ENGINE=InnoDB CHARACTER SET=utf8;
 create table if not exists Receipts (
     sale_id int AUTO_INCREMENT PRIMARY KEY,
     card_number varchar(255) not null,
     sale_date timestamp not null,
+    sum decimal(15,2) not null,
     INDEX (sale_date)
 )ENGINE=InnoDB CHARACTER SET=utf8;
 create table if not exists Products(
@@ -17,7 +19,7 @@ create table if not exists Products(
     code integer not null,
     INDEX (code),
     name  varchar(255) not null,
-    price float not null,
+    price decimal(15,2) not null,
     count  integer not null,
     FOREIGN KEY (sale_id)
         REFERENCES Receipts (sale_id)

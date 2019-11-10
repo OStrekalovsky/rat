@@ -7,6 +7,7 @@ import net.ostrekalovsky.rat.service.ReceiptsStoreException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -14,21 +15,16 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class Storage implements ReceiptStorage {
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private JdbcTemplate jdbc;
+public class ResumableStorage implements ReceiptStorage {
 
     @Autowired
     private MySQLDAOService dao;
 
+
     public void store(File fileName, List<Receipt> receipts) throws ReceiptsStoreException {
         try {
             log.info("Saving receipts into DB from file:{}", fileName.getAbsolutePath());
-            DBState dbState = getState(fileName.getName());
+            DBState dbState = dao.prepareStateForOrigin(fileName.getName());
             saveReceipts(dbState, receipts);
         } catch (Exception e) {
             throw new ReceiptsStoreException("Failed to save receipts from file:" + fileName.getAbsolutePath(), e);
@@ -36,14 +32,19 @@ public class Storage implements ReceiptStorage {
         log.info("Receipts have been saved");
     }
 
+    @Override
+    public boolean wasFileProcessed(File file) {
+        return dao.prepareStateForOrigin(file.getName()).isProcessed();
+    }
+
+
     private void saveReceipts(DBState state, List<Receipt> receipts) {
         state.moveForward();
         for (; state.getOffset() < receipts.size(); state.moveForward()) {
+            if (state.getOffset()==receipts.size()-1){
+                state.setProcessed();
+            }
             dao.storeReceipt(state, receipts.get(state.getOffset()));
         }
-    }
-
-    private DBState getState(String origin) {
-        return DBState.valueOf(jdbc, origin);
     }
 }
