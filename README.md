@@ -46,4 +46,4 @@ spring.datasource.password=root
 rat.import-dir=data/import
 rat.import-schedule-rate-ms=600000
 ````
-3. Run `docker-compose up`.
+4. Run `docker-compose up`.
