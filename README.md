@@ -28,3 +28,8 @@ File: `src/main/java/resources/application.properties`.
 1. `mvn spring-boot:run`
 1. Navigate to `localhost:8080` in browser to view the Index page.
 
+## Run in docker
+
+1. To build docker image: `docker build -t ost/rat .`
+1. To run docker image: `docker run -d --name rat --net=host -v <data-dir>:/data/import -v <dir-with-application.properties>:/config ost/rat`
+1. To delete docker container: `docker rm -ost/rat`
