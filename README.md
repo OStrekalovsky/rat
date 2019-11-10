@@ -28,8 +28,22 @@ File: `src/main/java/resources/application.properties`.
 1. `mvn spring-boot:run`
 1. Navigate to `localhost:8080` in browser to view the Index page.
 
-## Run in docker
+## Run with Docker
 
 1. To build docker image: `docker build -t ost/rat .`
 1. To run docker image: `docker run -d --name rat --net=host -v <data-dir>:/data/import -v <dir-with-application.properties>:/config ost/rat`
 1. To delete docker container: `docker rm -ost/rat`
+
+## Run with Docker Compose (Application & MySQL)
+
+1. Create directory 'mysql' for MySQL data.
+2. Create directory `data/import` for files to import.
+2. Create directory 'config' for `application.properties` file and set the following params:
+````
+spring.datasource.url=jdbc:mysql://mysql:3306/rat?useUnicode=true&characterEncoding=utf8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=root
+rat.import-dir=data/import
+rat.import-schedule-rate-ms=600000
+````
+3. Run `docker-compose up`.

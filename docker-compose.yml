@@ -1,0 +1,18 @@
+version: '3'
+services:
+  web:
+    restart: on-failure
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data/import:/data/import
+      - ./config:/config
+  mysql:
+    image: "mysql:5.7"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=rat
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
