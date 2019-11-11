@@ -44,7 +44,7 @@ public class XMLReceiptProcessorTest {
                 @Override
                 public void store(File fileName, List<Receipt> receipts) throws ReceiptsStoreException {
                     log.info("Store {} receipts from file:{}", receipts.size(), fileName.getAbsolutePath());
-                    assertThat(receipts).containsExactlyInAnyOrder(
+                    assertThat(receipts).containsExactly(
                             new Receipt("78483", 1528205653605L,
                                     Arrays.asList(
                                             new Product(15, "Чипсы", new BigDecimal("47.20"), 1),
