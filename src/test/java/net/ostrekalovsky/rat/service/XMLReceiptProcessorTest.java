@@ -34,7 +34,6 @@ public class XMLReceiptProcessorTest {
         @Bean
         RATProps getImportProps() {
             RATProps importProps = new RATProps();
-//            importProps.setDir("/home/ostrekalovsky/Downloads/maxi/import/");
             importProps.setImportDir("src/test/resources/importdir");
             return importProps;
         }
