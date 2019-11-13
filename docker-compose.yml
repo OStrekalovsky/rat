@@ -3,11 +3,12 @@ services:
   web:
     restart: on-failure
     build: .
+    image: "ost/rat"
     ports:
       - "8080:8080"
     volumes:
-      - ./data/import:/data/import
-      - ./config:/config
+      - ./data/import:/data/import:rw
+      - ./config:/config:rw
   mysql:
     image: "mysql:5.7"
     volumes:
@@ -16,3 +17,14 @@ services:
       - MYSQL_DATABASE=rat
       - MYSQL_PASSWORD=root
       - MYSQL_ROOT_PASSWORD=root
+  prometheus:
+    build: './prometheus'
+    ports:
+      - "9090:9090"
+  grafana:
+    build: './grafana'
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+

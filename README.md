@@ -34,7 +34,7 @@ File: `src/main/java/resources/application.properties`.
 1. To run docker image: `docker run -d --name rat --net=host -v <data-dir>:/data/import -v <dir-with-application.properties>:/config ost/rat`
 1. To delete docker container: `docker rm -ost/rat`
 
-## Run with Docker Compose (Application & MySQL)
+## Run with Docker Compose (Application + MySQL + Prometheus + Grafana)
 
 1. Create directory `mysql` for MySQL data.
 2. Create directory `data/import` for files to import.
@@ -47,3 +47,5 @@ rat.import-dir=data/import
 rat.import-schedule-rate-ms=600000
 ````
 4. Run `docker-compose up`.
+5. Navigate to `localhost:8080` in browser to view the Index page of the application.
+6. Navigate to `localhost:3000` in browser to open the Grafana dashboard **RAT Dashboard**.
