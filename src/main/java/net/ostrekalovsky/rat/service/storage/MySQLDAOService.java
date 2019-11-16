@@ -1,5 +1,6 @@
 package net.ostrekalovsky.rat.service.storage;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import net.ostrekalovsky.rat.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class MySQLDAOService implements ReportService, PersistentReceiptStorage 
 
     @Override
     @Transactional
+    @Timed(description = "Time spent saving receipt in db", value = "rat.receipt-save")
     public void storeReceipt(DBState state, Receipt receipt) {
         String queryState = "update States set offset=?, processed=? where origin=?";
         String queryReceipt = "insert into Receipts (card_number, sale_date, sum) values (?,?,?)";

@@ -1,5 +1,6 @@
 package net.ostrekalovsky.rat.service.storage;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import net.ostrekalovsky.rat.service.Receipt;
 import net.ostrekalovsky.rat.service.ReceiptStorage;
@@ -26,6 +27,7 @@ public class RenewableStorageService implements ReceiptStorage {
     @Autowired
     private MySQLDAOService dao;
 
+    @Timed(description = "Time spent saving file to db", value = "rat.file-save", longTask = true)
     public void store(File fileName, List<Receipt> receipts) throws ReceiptsStoreException {
         try {
             log.info("Saving receipts into DB from file:{}", fileName.getAbsolutePath());
