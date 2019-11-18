@@ -3,5 +3,3 @@ target
 data
 config
 mysql
-grafana
-prometheus
