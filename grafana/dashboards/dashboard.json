@@ -240,17 +240,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(http_server_requests_seconds_count{uri=\"/api/v1/sumByDate\",status=\"200\"}[5s])",
+          "expr": "rate(http_server_requests_seconds_count{uri=\"/api/v1/sumByDate\",status=\"200\"}[$__interval])",
           "legendFormat": "Sum by date",
           "refId": "C"
         },
         {
-          "expr": "rate(http_server_requests_seconds_count{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[5s])",
+          "expr": "rate(http_server_requests_seconds_count{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[$__interval])",
           "legendFormat": "Favourite products",
           "refId": "A"
-        },
-        {
-          "refId": "E"
         }
       ],
       "thresholds": [],
@@ -337,14 +334,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(http_server_requests_seconds_sum{uri=\"/api/v1/sumByDate\",status=\"200\"}[5s]) /\nrate(http_server_requests_seconds_count{uri=\"/api/v1/sumByDate\",status=\"200\"}[5s])",
-          "legendFormat": "Sum by date (avg)",
+          "expr": "histogram_quantile(0.99, rate(http_server_requests_seconds_bucket{uri=\"/api/v1/sumByDate\",status=\"200\"}[$__interval]))",
+          "instant": false,
+          "legendFormat": "Sum by date (99p)",
           "refId": "A"
         },
         {
-          "expr": "rate(http_server_requests_seconds_sum{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[5s]) /\nrate(http_server_requests_seconds_count{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[5s])",
-          "legendFormat": "Favourite products (avg)",
+          "expr": "histogram_quantile(0.5, rate(http_server_requests_seconds_bucket{uri=\"/api/v1/sumByDate\",status=\"200\"}[$__interval]))",
+          "legendFormat": "Sum by date (50p)",
+          "refId": "C"
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(http_server_requests_seconds_bucket{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[$__interval]))",
+          "legendFormat": "Favourite products (99p)",
           "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.5, rate(http_server_requests_seconds_bucket{uri=\"/api/v1/favouriteProducts\",status=\"200\"}[$__interval]))",
+          "legendFormat": "Favourite products (50p)",
+          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -432,7 +440,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(rat_receipt_save_seconds_count[5s])",
+          "expr": "rate(rat_receipt_save_seconds_count[$__interval])",
           "legendFormat": "Transact/sec",
           "refId": "A"
         }
