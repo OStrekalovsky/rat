@@ -9,6 +9,8 @@ services:
     volumes:
       - ./data/import:/data/import:rw
       - ./config:/config:rw
+    depends_on:
+      - mysql
   mysql:
     image: "mysql:5.7"
     volumes:
@@ -27,4 +29,6 @@ services:
       - "3000:3000"
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
+    depends_on:
+      - prometheus
 
